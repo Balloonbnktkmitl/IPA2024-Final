@@ -111,20 +111,20 @@ while True:
         # https://developer.webex.com/docs/basics for more detail
 
         if command == "showrun" and responseMessage == 'ok':
-            # filename = "<!!!REPLACEME with show run filename and path!!!>"
-            # fileobject = <!!!REPLACEME with open file!!!>
-            # filetype = "<!!!REPLACEME with Content-type of the file!!!>"
-            # postData = {
-            #     "roomId": <!!!REPLACEME!!!>,
-            #     "text": "show running config",
-            #     "files": (<!!!REPLACEME!!!>, <!!!REPLACEME!!!>, <!!!REPLACEME!!!>),
-            # }
-            # postData = MultipartEncoder(<!!!REPLACEME!!!>)
-            # HTTPHeaders = {
-            # "Authorization": ACCESS_TOKEN,
-            # "Content-Type": <!!!REPLACEME with postData Content-Type!!!>,
-            # }
-            pass
+            filename = "show_run_65070021_CSR1KV-Pod1-1.txt"
+            fileobject = open(filename, 'rb')
+            filetype = 'text/plain'
+            postData = {
+                "roomId": roomIdToGetMessage,
+                "text": "show running config",
+                "files": (filename, fileobject, filetype),
+            }
+            postData = MultipartEncoder(fields=postData)
+            HTTPHeaders = {
+            "Authorization": "Bearer " + ACCESS_TOKEN,
+            "Content-Type": postData.content_type,
+            }
+        
         # other commands only send text, or no attached file.
         else:
             postData = {"roomId": roomIdToGetMessages, "text": responseMessage} 

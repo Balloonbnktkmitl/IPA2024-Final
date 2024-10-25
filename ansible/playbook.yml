@@ -1,0 +1,15 @@
+---
+- name: Save running configuration
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Save running config to file
+      ios_command:
+        commands:
+          - show running-config
+      register: run_output
+
+    - name: Write the running config to a file
+      copy:
+        content: "{{ run_output.stdout[0] }}"
+        dest: "/path/to/show_run_{{ student_id }}_{{ router_name }}.txt"
