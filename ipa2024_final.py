@@ -132,7 +132,7 @@ while True:
             postData = {"roomId": roomIdToGetMessages, "text": responseMessage} 
             # the Webex Teams HTTP headers, including the Authoriztion and Content-Type
             postHTTPHeaders = HTTPHeaders = {"Authorization": "Bearer " + ACCESS_TOKEN, "Content-Type": "application/json"}
-            json.dumps(postData)
+            postData=json.dumps(postData)
             
 
         # Post the call to the Webex Teams message API.
