@@ -11,6 +11,7 @@ import json
 import time
 import os
 
+from netmiko_final import gigabit_status
 from restconf_final import create, delete, enable, disable, status
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
@@ -23,7 +24,7 @@ if ACCESS_TOKEN is None:
 # 3. Prepare parameters get the latest message for messages API.
 
 # Defines a variable that will hold the roomId
-roomIdToGetMessages = "Y2lzY29zcGFyazovL3VzL1JPT00vNTFmNTJiMjAtNWQwYi0xMWVmLWE5YTAtNzlkNTQ0ZjRkNGZi"
+roomIdToGetMessages = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZjRlYzBlZDAtZTJkMC0xMWVlLWFhZDAtNDNlNTUwYjg4Mzhj"
 
 while True:
     # always add 1 second of delay to the loop to not go over a rate limit of API calls
