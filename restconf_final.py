@@ -109,21 +109,28 @@ def enable():
 
 
 def disable():
-    yangConfig = <!!!REPLACEME with YANG data!!!>
+    yangConfig = {
+        "ietf-interfaces:interface": {
+            "name": "Loopback65070021",
+            "type": "iana-if-type:softwareLoopback",
+            "enabled": False,
+        }
+    }
 
-    resp = requests.<!!!REPLACEME with the proper HTTP Method!!!>(
-        <!!!REPLACEME with URL!!!>, 
-        data=json.dumps(<!!!REPLACEME with yangConfig!!!>), 
+    resp = requests.patch(
+        api_url + "/data/ietf-interfaces:interfaces/interface=Loopback65070021",
+        data=json.dumps(yangConfig),
         auth=basicauth, 
-        headers=<!!!REPLACEME with HTTP Header!!!>, 
+        headers=headers,
         verify=False
         )
 
     if(resp.status_code >= 200 and resp.status_code <= 299):
         print("STATUS OK: {}".format(resp.status_code))
-        return "<!!!REPLACEME with proper message!!!>"
+        return "Interface loopback 65070021 is shutdowned successfully"
     else:
         print('Error. Status Code: {}'.format(resp.status_code))
+        return "Cannot shutdown: Interface loopback 65070021"
 
 
 def status():
