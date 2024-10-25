@@ -11,6 +11,7 @@ import json
 import time
 import os
 
+from restconf_final import create, delete, enable, disable, status
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
 
@@ -22,7 +23,7 @@ if ACCESS_TOKEN is None:
 # 3. Prepare parameters get the latest message for messages API.
 
 # Defines a variable that will hold the roomId
-roomIdToGetMessages = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZjRlYzBlZDAtZTJkMC0xMWVlLWFhZDAtNDNlNTUwYjg4Mzhj"
+roomIdToGetMessages = "Y2lzY29zcGFyazovL3VzL1JPT00vNTFmNTJiMjAtNWQwYi0xMWVmLWE5YTAtNzlkNTQ0ZjRkNGZi"
 
 while True:
     # always add 1 second of delay to the loop to not go over a rate limit of API calls
@@ -68,11 +69,11 @@ while True:
 
     # check if the text of the message starts with the magic character "/" followed by your studentID and a space and followed by a command name
     #  e.g.  "/66070123 create"
-    if message.startswith("/65070021"):
+    if message.find("/65070021") == 0:
 
         # extract the command
-        command = message.split(" ")[1]
-        command = command[1]
+        command = message.split(" ", 1) # Add
+        command = command[1] # Add
         print(command)
 
 # 5. Complete the logic for each command
@@ -87,7 +88,7 @@ while True:
             responseMessage = disable()
         elif command == "status":
             responseMessage = status()
-         elif command == "gigabit_status":
+        elif command == "gigabit_status":
             responseMessage = gigabit_status()
         elif command == "showrun":
             responseMessage = "ok"
@@ -109,32 +110,34 @@ while True:
         # https://developer.webex.com/docs/basics for more detail
 
         if command == "showrun" and responseMessage == 'ok':
-            filename = "<!!!REPLACEME with show run filename and path!!!>"
-            fileobject = <!!!REPLACEME with open file!!!>
-            filetype = "<!!!REPLACEME with Content-type of the file!!!>"
-            postData = {
-                "roomId": <!!!REPLACEME!!!>,
-                "text": "show running config",
-                "files": (<!!!REPLACEME!!!>, <!!!REPLACEME!!!>, <!!!REPLACEME!!!>),
-            }
-            postData = MultipartEncoder(<!!!REPLACEME!!!>)
-            HTTPHeaders = {
-            "Authorization": ACCESS_TOKEN,
-            "Content-Type": <!!!REPLACEME with postData Content-Type!!!>,
-            }
+            # filename = "<!!!REPLACEME with show run filename and path!!!>"
+            # fileobject = <!!!REPLACEME with open file!!!>
+            # filetype = "<!!!REPLACEME with Content-type of the file!!!>"
+            # postData = {
+            #     "roomId": <!!!REPLACEME!!!>,
+            #     "text": "show running config",
+            #     "files": (<!!!REPLACEME!!!>, <!!!REPLACEME!!!>, <!!!REPLACEME!!!>),
+            # }
+            # postData = MultipartEncoder(<!!!REPLACEME!!!>)
+            # HTTPHeaders = {
+            # "Authorization": ACCESS_TOKEN,
+            # "Content-Type": <!!!REPLACEME with postData Content-Type!!!>,
+            # }
+            pass
         # other commands only send text, or no attached file.
         else:
-            postData = {"roomId": <!!!REPLACEME!!!>, "text": <!!!REPLACEME!!!>}
-            postData = json.dumps(postData)
+            postData = {"roomId": roomIdToGetMessages, "text": responseMessage} 
+            
 
             # the Webex Teams HTTP headers, including the Authoriztion and Content-Type
-            HTTPHeaders = {"Authorization": <!!!REPLACEME!!!>, "Content-Type": <!!!REPLACEME!!!>}   
+            postHTTPHeaders = HTTPHeaders = {"Authorization": "Bearer " + ACCESS_TOKEN, "Content-Type": "application/json"}
+            
 
         # Post the call to the Webex Teams message API.
         r = requests.post(
-            "<!!!REPLACEME with URL of Webex Teams Messages API!!!>",
-            data=<!!!REPLACEME!!!>,
-            headers=<!!!REPLACEME!!!>,
+            "https://webexapis.com/v1/messages", 
+            data=json.dumps(postData), 
+            headers=postHTTPHeaders, 
         )
         if not r.status_code == 200:
             raise Exception(
