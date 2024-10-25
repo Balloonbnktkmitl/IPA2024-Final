@@ -6,20 +6,23 @@
 #######################################################################################
 # 1. Import libraries for API requests, JSON formatting, time, os, (restconf_final or netconf_final), netmiko_final, and ansible_final.
 
-<!!!REPLACEME with code for libraries>
+import requests
+import json
+import time
+import os
 
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
 
-ACCESS_TOKEN = os.environ."<!!!REPLACEME with os.environ method and environment variable!!!>"
+ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
+if ACCESS_TOKEN is None:
+    raise ValueError("Webex Access Token: Not found, please set it in the environment variables.")
 
 #######################################################################################
 # 3. Prepare parameters get the latest message for messages API.
 
 # Defines a variable that will hold the roomId
-roomIdToGetMessages = (
-    "<!!!REPLACEME with roomID of the IPA2024 Webex Teams room!!!>"
-)
+roomIdToGetMessages = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vZjRlYzBlZDAtZTJkMC0xMWVlLWFhZDAtNDNlNTUwYjg4Mzhj"
 
 while True:
     # always add 1 second of delay to the loop to not go over a rate limit of API calls
@@ -31,7 +34,7 @@ while True:
     getParameters = {"roomId": roomIdToGetMessages, "max": 1}
 
     # the Webex Teams HTTP header, including the Authoriztion
-    getHTTPHeader = {"Authorization": <!!!REPLACEME!!!>}
+    getHTTPHeader = {"Authorization": "Bearer " + ACCESS_TOKEN}
 
 # 4. Provide the URL to the Webex Teams messages API, and extract location from the received message.
     
@@ -39,9 +42,9 @@ while True:
     # - Use the GetParameters to get only the latest message.
     # - Store the message in the "r" variable.
     r = requests.get(
-        "<!!!REPLACEME with URL of Webex Teams Messages API!!!>",
-        params=<!!!REPLACEME with HTTP parameters!!!>,
-        headers=<!!!REPLACEME with HTTP headers!!!>,
+        "https://webexapis.com/v1/messages", 
+        params=getParameters, 
+        headers=getHTTPHeader, 
     )
     # verify if the retuned HTTP status code is 200/OK
     if not r.status_code == 200:
@@ -65,28 +68,29 @@ while True:
 
     # check if the text of the message starts with the magic character "/" followed by your studentID and a space and followed by a command name
     #  e.g.  "/66070123 create"
-    if message.startswith("<!!!REPLACEME!!!>"):
+    if message.startswith("/65070021"):
 
         # extract the command
-        command = <!!!REPLACEME!!!>
+        command = message.split(" ")[1]
+        command = command[1]
         print(command)
 
 # 5. Complete the logic for each command
 
         if command == "create":
-            <!!!REPLACEME with code for create command!!!>     
+            responseMessage = create()
         elif command == "delete":
-            <!!!REPLACEME with code for delete command!!!>
+            responseMessage = delete()
         elif command == "enable":
-            <!!!REPLACEME with code for enable command!!!>
+            responseMessage = enable()
         elif command == "disable":
-            <!!!REPLACEME with code for disable command!!!>
+            responseMessage = disable()
         elif command == "status":
-            <!!!REPLACEME with code for status command!!!>
+            responseMessage = status()
          elif command == "gigabit_status":
-            <!!!REPLACEME with code for gigabit_status command!!!>
+            responseMessage = gigabit_status()
         elif command == "showrun":
-            <!!!REPLACEME with code for showrun command!!!>
+            responseMessage = "ok"
         else:
             responseMessage = "Error: No command or unknown command"
         
