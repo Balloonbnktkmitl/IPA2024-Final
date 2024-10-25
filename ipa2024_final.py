@@ -11,8 +11,10 @@ import json
 import time
 import os
 
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 from netmiko_final import gigabit_status
 from restconf_final import create, delete, enable, disable, status
+from ansible_final import showrun
 #######################################################################################
 # 2. Assign the Webex access token to the variable ACCESS_TOKEN using environment variables.
 
@@ -92,7 +94,7 @@ while True:
         elif command == "gigabit_status":
             responseMessage = gigabit_status()
         elif command == "showrun":
-            responseMessage = "ok"
+            responseMessage = showrun()
         else:
             responseMessage = "Error: No command or unknown command"
         
@@ -115,12 +117,12 @@ while True:
             fileobject = open(filename, 'rb')
             filetype = 'text/plain'
             postData = {
-                "roomId": roomIdToGetMessage,
+                "roomId": roomIdToGetMessages,
                 "text": "show running config",
                 "files": (filename, fileobject, filetype),
             }
             postData = MultipartEncoder(fields=postData)
-            HTTPHeaders = {
+            postHTTPHeaders= HTTPHeaders = {
             "Authorization": "Bearer " + ACCESS_TOKEN,
             "Content-Type": postData.content_type,
             }
@@ -128,16 +130,15 @@ while True:
         # other commands only send text, or no attached file.
         else:
             postData = {"roomId": roomIdToGetMessages, "text": responseMessage} 
-            
-
             # the Webex Teams HTTP headers, including the Authoriztion and Content-Type
             postHTTPHeaders = HTTPHeaders = {"Authorization": "Bearer " + ACCESS_TOKEN, "Content-Type": "application/json"}
+            json.dumps(postData)
             
 
         # Post the call to the Webex Teams message API.
         r = requests.post(
             "https://webexapis.com/v1/messages", 
-            data=json.dumps(postData), 
+            data=postData, 
             headers=postHTTPHeaders, 
         )
         if not r.status_code == 200:

@@ -1,6 +1,6 @@
 ---
 - name: Save running configuration
-  hosts: routers
+  hosts: cisco_routers
   gather_facts: no
   tasks:
     - name: Save running config to file
@@ -12,4 +12,4 @@
     - name: Write the running config to a file
       copy:
         content: "{{ run_output.stdout[0] }}"
-        dest: "/path/to/show_run_{{ student_id }}_{{ router_name }}.txt"
+        dest: "show_run_65070021_CSR1KV-Pod1-1.txt"
